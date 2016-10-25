@@ -1,0 +1,65 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="./js/jquery-3.1.1.min.js"></script>
+<script>
+$(document).ready(function(){
+  $(":button").click(function(){ 
+   //alert ($(this).val());
+valor=$(this).val();
+//alert(valor);
+$("#cuerpo").load(valor);
+});
+     $("#enviaClaves").click(function(){ 
+   //alert ($(this).val());
+valor=$(this).val();
+//alert(valor);
+$("#cuerpo").load(valor);
+});
+$(document).on('click', '.enviaClaves', function() {
+nombre=$("#nombre").val();
+contra=$("#contra").val();
+ $.ajax({
+      url:"procesaclaves.php",
+      type: "POST",
+    data:{nombre:nombre, contra:contra},
+      success: function(opciones){
+      // $("#asignaEstandares").html(opciones);
+//alert ("Datos actualizados");
+
+valor=opciones;
+if (valor==1){
+//alert ("Clave correcta");
+ $("#cuerpo").load("programa.php");
+}else{
+//alert("Clave incorrecta");
+$("#cuerpo").html("La clave introducida no es válida");
+}
+      }
+
+    });
+});
+});
+</script>
+</head>
+<body>
+<?php
+if (!file_exists("config.php")){
+header ("Location: ./admin/");
+}
+?>
+<div id="cabecera">
+<table>
+<tr>
+ <td><button type="button" value="pideclaves.php">Programar</button> </td>
+ <td><button type="button" value="ponernotas.php">Poner notas</button> </td>
+ <td><button type="button" value="vernotas.php">Ver notas</button> </td>
+ <td><button type="button" value="vercalificaciones.php">Ver calificaciones</button> </td>
+</table>
+</div>
+<div id="cuerpo">
+
+</div>
+</body>
+
+</html>
