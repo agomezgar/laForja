@@ -1,0 +1,56 @@
+<?php
+session_start();
+   include("conectarse.php");
+   $link=Conectarse();
+
+$curso=$_POST['curso'];
+$materia=$_POST['materia'];
+$trimestre=$_POST['trimestre'];
+
+
+//$nombre=$_SESSION['profesor'];
+$nombreTablaInstrumentos=$materia."Instrumentos".$curso;
+$nombreTablaOrganizacionEstandares=$materia."organizacionestandares".$curso;
+$nombreTablaEstandares="estandares".$materia;
+switch ($trimestre) {
+    case 1:
+        $cadena="<option value=\"1\" selected=\"selected\">1º</option>
+<option value=\"2\">2º</option>
+<option value=\"3\">3º</option>";
+        break;
+    case 2:
+        $cadena="<option value=\"1\" >1º</option>
+<option value=\"2\"selected=\"selected\">2º</option>
+<option value=\"3\">3º</option>";
+        break;
+    case 3:
+        $cadena="<option value=\"1\" >1º</option>
+<option value=\"2\">2º</option>
+<option value=\"3\"selected=\"selected\">3º</option>";
+        break;
+}
+echo "<table border=\"1\">";
+$buscaEstandar=mysqli_query($link,"SELECT DISTINCT idestandar FROM $nombreTablaOrganizacionEstandares WHERE trimestre=$trimestre");
+while ($encuentraEstandar=mysqli_fetch_array($buscaEstandar)){
+$idEstandar=$encuentraEstandar['idestandar'];
+
+echo "<tr><td>".$idEstandar."</td> ";
+$buscaTexto=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE id=$idEstandar");
+while($encuentraTexto=mysqli_fetch_array($buscaTexto)){
+echo "<td>".utf8_encode($encuentraTexto['estandar'])."</td>";
+}
+echo "<td><select class=\"cambiaInstrumento\" id=\"".$idEstandar."\">";
+echo $cadena."</select></td><td>";
+$buscaInstrumentos=mysqli_query($link,"SELECT * FROM $nombreTablaOrganizacionEstandares WHERE idestandar=$idEstandar");
+while($encInst=mysqli_fetch_array($buscaInstrumentos)){
+$idInstrumento=$encInst['idinstrumento'];
+$buscaTextInst=mysqli_query($link,"SELECT * FROM $nombreTablaInstrumentos WHERE id=$idInstrumento");
+while($encTextInst=mysqli_fetch_array($buscaTextInst)){
+$textoInstrumento=$encTextInst['instrumento'];
+echo $textoInstrumento."<br>";
+}
+}
+echo"</td></tr>";
+}
+
+?>
