@@ -5,6 +5,7 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script src="./js/jquery-3.1.1.min.js"></script>
+ <link rel="stylesheet" href="hojaEstilos.css">
 <script>
 $(document).ready(function(){
 perfil=$("#perfil").val();
@@ -14,7 +15,7 @@ $( "#programar" ).prop( "disabled", true );
 
   $(":button").click(function(){ 
    //alert ($(this).val());
-valor=$(this).val();
+valor=$(this).attr('name');
 //alert(valor);
 $("#cuerpo").load(valor);
 });
@@ -91,12 +92,13 @@ header ("Location: ./admin/");
 <input type="hidden" id="perfil" value="<?php echo $_SESSION['perfil'];?>">
 <table>
 <tr>
- <td><button type="button" id="programar" value="programa.php"onclick="alert('¡Cuidado! Cualquier información anterior relativa al curso y materia seleccionados se borrará. Sea cauto.')">Programar</button> </td>
- <td><button type="button" value="ponernotas.php">Poner notas</button> </td>
- <td><button type="button" value="vernotas.php">Ver notas por grupo</button> </td>
-<td><button type="button" value="vernotasAlumno.php">Ver notas por alumno</button> </td>
-<td><button type="button" value="otroInstrumento.php">Añadir instrumentos de evaluación</button> </td>
- <td><button type="button" value="vercalificaciones.php">Justificar calificaciones</button> </td>
+ <td><input type="button" id="programar" value="Programar" name="programa.php"onclick="alert('¡Cuidado! Cualquier información anterior relativa al curso y materia seleccionados se borrará. Sea cauto.')"></td>
+ <td><input type="button" value="Poner notas" name="ponernotas.php"> </td>
+ <td><input type="button" value= "Ver notas" name="vernotas.php"> </td>
+<td><input type="button" value="Ver notas por alumno" name="vernotasAlumno.php"> </td>
+<td><input type="button" value="Añadir instrumentos de evaluación" name="otroInstrumento.php"> </td>
+<td><input type="button" value="Cambiar estándares de trimestre" name="cambiarEstandares.php"> </td>
+ <td><input type="button" value="Justificar calificaciones" name="vercalificaciones.php"></td>
 </table>
 </div>
 <div id="cuerpo">

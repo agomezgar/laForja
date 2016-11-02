@@ -30,7 +30,7 @@ $pesoPAvanzado=($cargaPrioridad['peso'])/100;
 }
 }
 //Contamos los estandares
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' ")or die (mysqli_error($link));
+$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
 //Ponemos a 0 la cuenta de estándares B,A,I;
 $nestandarB=0;
 $nestandarA=0;
@@ -86,7 +86,7 @@ echo "Instrumento: ".utf8_encode($nombre)." Nota: ".$nota."<br>";
 
 }
 }
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' ")or die (mysqli_error($link));
+$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar ")or die (mysqli_error($link));
 while($buscaSql=mysqli_fetch_array($sql)){
 $notaEstandar=0;
 $numeroInstrumentos=0;

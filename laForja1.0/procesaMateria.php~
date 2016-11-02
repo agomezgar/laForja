@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS $nombreTablaNotas (
 `id` int NOT NULL AUTO_INCREMENT,
 `alumno` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
 `instrumento` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
-  `nota` int(2) NOT NULL,
+  `nota` float(2) NOT NULL,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 ";

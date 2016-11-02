@@ -25,7 +25,7 @@ $curso= $_SESSION['curso'];
 if ($trimestre=="4"){echo "<meta http-equiv=\"refresh\" content=\"0;URL=seleccionar.php\">";}
 ?>
 <table border="1">
-<tr><td>Bloque</td><td>Trimestre</td><td>Estandar</td><td>Prioridad</td><td>Instrumento de evaluación</td></tr>
+<tr><td>Bloque</td><td>Trimestre</td><td>Estandar</td><td>Prioridad</td><td>Instrumento de evaluación</td><td>Competencias afectadas</td></tr>
 <?php
 
 $buscaContenidos=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE curso='$curso'");
@@ -80,8 +80,15 @@ echo "<tr><td><input type=\"hidden\" class=\"$cuentaContenidos\" name=\"idEst[$c
 $buscaInstrumentos=mysqli_query($link,"SELECT * FROM $nombreTablaInstrumentos WHERE trimestre=$trimestre AND contenido=".$encuentraContenidosporTrimestre['contenido']);
 $cont=1; 
 while($encuentraInstrumentos = mysqli_fetch_array($buscaInstrumentos)) {
-echo"<p> <input type=\"checkbox\" name=\"".$encuentraInstrumentos['id']."\" class=\"$cuentaContenidos\">".utf8_encode($encuentraInstrumentos['instrumento'])."</p>";
+echo"<p> <input type=\"checkbox\" id=\"instru\" name=\"".$encuentraInstrumentos['id']."\" class=\"$cuentaContenidos\">".utf8_encode($encuentraInstrumentos['instrumento'])."</p>";
 $cont++;
+}
+echo "</td><td>";
+//Busca competencias
+$comp=mysqli_query($link,"SELECT * FROM competencias")or die (mysqli_error($link));
+while($compet=mysqli_fetch_array($comp)){
+echo "<input type=\"checkbox\" name=\"$id\" class=\"competencia\" value=\"".$compet['id']."\">".$compet['codigo']."<br>";
+//echo $compet['competencia'];
 }
 echo "</td></tr>";}
 }

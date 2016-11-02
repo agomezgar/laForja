@@ -1,4 +1,6 @@
 <?php session_start(); 
+require(dirname(__FILE__).'/fpdf/fpdf.php');
+
 if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";echo "<meta http-equiv=\"refresh\" content=\"5;URL=index.php\">";}
 ?>
 <script src="./js/jquery-3.1.1.min.js"></script>
@@ -48,16 +50,29 @@ switch (etapa) {
 		curso=parseInt(grupo.substring(0,1))+6;
 		break;	
 }
+
          $.ajax({
       url:"dameCalificaciones.php",
       type: "POST",
       data: {grupo: grupo,materia: materia, trimestre: trimestre,curso:curso},
       success: function(opciones){
-        $("#tablaCalificaciones").html(opciones);
+      
+  $("#tablaCalificaciones").html(opciones);
+ 
+
       }
   
     });
 
+cadena='<form method="post" action="dameCalificacionespdf.php" target="_blank">';
+cadena=cadena+'<input type="hidden" name="grupo" value="'+grupo+'">';
+cadena=cadena+'<input type="hidden" name="materia" value="'+materia+'">';
+cadena=cadena+'<input type="hidden" name="trimestre" value="'+trimestre+'">';
+cadena=cadena+'<input type="hidden" name="curso" value="'+curso+'">';
+cadena=cadena+'</form>';
+//alert(cadena);
+$(cadena).submit();
+ //window.open('', '_blank');
     });
 
 });

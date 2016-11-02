@@ -16,6 +16,7 @@ $nombreTablaInstrumentos=$materia."Instrumentos".$curso;
 $nombreTablaExamenes=$materia."notas".$curso;
 $nombreTablaEstandares=$materia."organizacionestandares".$curso;
 $listaEstandares="estandares".$materia;
+$nombreTablaCompetencias="competencias".$materia;
 $prioridad=mysqli_query($link,"SELECT * FROM prioridades");
 while($cargaPrioridad=mysqli_fetch_array($prioridad)){
 if ($cargaPrioridad['prioridad']=="1"){
@@ -29,7 +30,7 @@ $pesoPAvanzado=($cargaPrioridad['peso'])/100;
 }
 }
 //Contamos los estandares
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' ")or die (mysqli_error($link));
+$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
 //Ponemos a 0 la cuenta de estándares B,A,I;
 $nestandarB=0;
 $nestandarA=0;
@@ -51,7 +52,7 @@ $nestandarA++;
 $multBasico=($pesoPBasico/$nestandarB);
 $multIntermedio=$pesoPIntermedio/$nestandarI;
 $multAvanzado=$pesoPAvanzado/$nestandarA;
-echo "Para este trimestre hay asignados ".$nestandarB." estándares básicos (peso ".$pesoPBasico.", les corresponde a cada uno un multiplicador de ".$multBasico."), ".$nestandarI." estándares intermedios (peso ".$pesoPIntermedio.", les corresponde a cada uno un multiplicador de ".$multIntermedio."),  y ".$nestandarA." avanzados (peso ".$pesoPAvanzado."), les corresponde a cada uno un multiplicador de ".$multAvanzado."";
+echo "Para este trimestre hay asignados ".$nestandarB." estándares básicos (peso ".$pesoPBasico.", les corresponde a cada uno un multiplicador de ".number_format($multBasico,4)."), ".$nestandarI." estándares intermedios (peso ".$pesoPIntermedio.", les corresponde a cada uno un multiplicador de ".number_format($multIntermedio,4)."),  y ".$nestandarA." avanzados (peso ".$pesoPAvanzado."), les corresponde a cada uno un multiplicador de ".number_format($multAvanzado,4)."";
 //echo $nombreTablaInstrumentos."<br>".$nombreTablaExamenes;
 //echo $grupo.$materia.$trimestre.$curso;
 $cuenta=0;
@@ -61,8 +62,9 @@ $nombre=$dameNombre['nombre'];
 $apellidos=$dameNombre['apellidos'];
 }
 echo "<h2>Alumno: ".utf8_encode($apellidos).", ".utf8_encode($nombre)."</h2>";
+echo "<input type=\"submit\" id=\"pdfIndividual\" value=\"GenerarPDF\">";
 //AQUÍ EMPIEZA LA RUTINA DE CONTABILIZACIÓN DE NOTAS
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' ")or die (mysqli_error($link));
+$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
 while($buscaSql=mysqli_fetch_array($sql)){
 $notaEstandar=0;
 $numeroInstrumentos=0;
@@ -125,6 +127,7 @@ $notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multAvanzado;
 
 echo "<h2>Nota final: ".$notaAcumulada."</h2>";
 //AQUÍ ACABA LA RUTINA DE CONTABILIZACIÓN DE NOTAS
+$notaAcumulada=0;
 //echo"<form id=\"notas\" name=\"notas\" method=\"post\" action=\"grabaExamen.php\">";
 $cuentaInstrumentos=mysqli_query($link,"SELECT * FROM $nombreTablaInstrumentos WHERE trimestre='$trimestre'")or die(mysqli_error($link));
 echo "<table border=\"1\"><tr><th>Instrumento de evaluación</th><th>Nota</th></tr>";
@@ -150,7 +153,7 @@ echo "<td> ".utf8_encode($nombreInst)."</td><td><input type=\"text\" class=\"not
 
 }
 echo "</table>";
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' ")or die (mysqli_error($link));
+$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
 while($buscaSql=mysqli_fetch_array($sql)){
 $notaEstandar=0;
 $numeroInstrumentos=0;
@@ -178,7 +181,7 @@ $notaInt= $notaInt+$encuentraEx['nota'];
 $cuentaInt++;
 }
 $notaInstrumento=$notaInt/$cuentaInt;
-echo "Nota media (hay varias): ".$notaInstrumento."<br>";
+echo "Nota media (hay varias): ".number_format($notaInstrumento,2)."<br>";
 $notaEstandar=$notaEstandar+$notaInstrumento;
 }else{
 while($encuentraEx=mysqli_fetch_array($buscaExamenes)){
@@ -192,28 +195,37 @@ $notaEstandar=$notaEstandar+$notaInstrumento;
 }
 
 }
-echo "<br>Numero de Instrumentos: ".$numeroInstrumentos." Nota media: ".$notaEstandar/$numeroInstrumentos."<br>";
+
+echo "<br>Numero de Instrumentos: ".$numeroInstrumentos." Nota media: ".number_format($notaEstandar/$numeroInstrumentos,2)."<br>";
 if ($idEstandarAplicada=="1"){
 echo "<br>Prioridad de estandar: Básico";
-echo "<br>Aportación a la nota: ".($notaEstandar/$numeroInstrumentos)*$multBasico;
+echo "<br>Aportación a la nota: ".number_format(($notaEstandar/$numeroInstrumentos)*$multBasico,4);
 $notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multBasico;
 }
 if ($idEstandarAplicada=="2"){
 echo "<br>Prioridad de estandar: Intermedio";
-echo "<br>Aportación a la nota: ".($notaEstandar/$numeroInstrumentos)*$multIntermedio;
+echo "<br>Aportación a la nota: ".number_format(($notaEstandar/$numeroInstrumentos)*$multIntermedio,4);
 $notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multIntermedio;
 }
 if ($idEstandarAplicada=="3"){
 echo "<br>Prioridad de estandar: Avanzado";
-echo "<br>Aportación a la nota: ".($notaEstandar/$numeroInstrumentos)*$multAvanzado;
+echo "<br>Aportación a la nota: ".number_format(($notaEstandar/$numeroInstrumentos)*$multAvanzado,4);
 $notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multAvanzado;
 }
-
+$codigoEstandar=$buscaSql['idestandar'];
+echo "<br>Competencias pertinentes: <br><ul>";
+$buscaComp=mysqli_query($link,"SELECT * FROM $nombreTablaCompetencias WHERE contenido=$codigoEstandar");
+while($encComp=mysqli_fetcH_array($buscaComp)){
+$compActual=$encComp['competencia'];
+$competencia=mysqli_query($link,"SELECT competencia FROM competencias WHERE id=$compActual");
+echo "<li>".utf8_encode(mysqli_fetch_array($competencia)[0])."</li>";
+}
+echo "</ul>";
 echo "</fieldset>";
 }
 
 }
-echo "<h1>Nota final: ".$notaAcumulada."</h1>";
+echo "<h1>Nota final: ".number_format($notaAcumulada,2)."</h1>";
 echo "<input type=\"hidden\" name=\"notaAcumulada\" id=\"notaAcumulada\" value=\".$notaAcumulada.\"/>"; 
 echo "</fieldset>";
 ?>

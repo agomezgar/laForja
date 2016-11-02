@@ -30,7 +30,7 @@ $pesoPAvanzado=($cargaPrioridad['peso'])/100;
 }
 }
 //Contamos los estandares
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' ")or die (mysqli_error($link));
+$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
 //Ponemos a 0 la cuenta de estándares B,A,I;
 $nestandarB=0;
 $nestandarA=0;
@@ -54,9 +54,10 @@ $multIntermedio=$pesoPIntermedio/$nestandarI;
 $multAvanzado=$pesoPAvanzado/$nestandarA;
 echo "Para este trimestre hay asignados ".$nestandarB." estándares básicos (peso ".$pesoPBasico.", les corresponde a cada uno un multiplicador de ".$multBasico."), ".$nestandarI." estándares intermedios (peso ".$pesoPIntermedio.", les corresponde a cada uno un multiplicador de ".$multIntermedio."),  y ".$nestandarA." avanzados (peso ".$pesoPAvanzado."), les corresponde a cada uno un multiplicador de ".$multAvanzado."";
 //Preparamos los datos del alumno
-
-$idAlumno=$alumno;
-echo "<fieldset><legend><b>Nota por estándares</b></legend>";
+$alumno=mysqli_query($link,"SELECT * FROM matriculas WHERE grupo='$grupo' ORDER BY apellidos")or die (mysqli_error($link));
+while($encuentraAlumno=mysqli_fetch_array($alumno)){
+$idAlumno=$encuentraAlumno['alumno'];
+echo "<fieldset><legend><b>".utf8_encode($encuentraAlumno['apellidos']).", ".utf8_encode($encuentraAlumno['nombre'])."</b></legend>";
 $notaAcumulada=0;
 
 $buscaInstrumentos=mysqli_query($link,"SELECT * FROM $nombreTablaInstrumentos WHERE trimestre='$trimestre'");
@@ -85,7 +86,7 @@ echo "Instrumento: ".utf8_encode($nombre)." Nota: ".$nota."<br>";
 
 }
 }
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' ")or die (mysqli_error($link));
+$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY id ")or die (mysqli_error($link));
 while($buscaSql=mysqli_fetch_array($sql)){
 $notaEstandar=0;
 $numeroInstrumentos=0;

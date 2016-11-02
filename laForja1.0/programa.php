@@ -129,7 +129,8 @@ $opcionesCurso.='<option value="'.$encuentraMaterias["codigo"].'">'.utf8_encode(
 //echo $_SESSION['identificado'];
 ?>
 <div id="otrasopciones">
-<button type="button" id="cargaProfesores" value="cargaProfesores.php">Asignar profesores</button>
+
+<input type="button" value="Asignar profesores" id="cargaProfesores" name="cargaProfesores.php">
 </div>
 <table>
 <tr>

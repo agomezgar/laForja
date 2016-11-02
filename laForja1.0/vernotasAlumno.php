@@ -144,7 +144,7 @@ if (($.isNumeric(valor))&&(valor<11)&&(valor>(-1))){
       data: {idNota: idNota, valor: valor,materia: materia, curso: curso},
       success: function(opciones){
         //$("#tablaDatos").html(opciones);
-alert("Nota cambiada a "+valor);
+
       }
  });
          $.ajax({
@@ -164,7 +164,18 @@ else{
 alert("Introduzca un valor de nota adecuado");
 }
 });
-
+$(document).on('click', '#pdfIndividual', function() {
+//alert("Materia: "+materia+", grupo: "+grupo+", curso: "+curso+", trimestre: "+trimestre+", alumno: "+alumno);
+cadena='<form method="post" action="dameNotasIndividualpdf.php" target="_blank">';
+cadena=cadena+'<input type="hidden" name="grupo" value="'+grupo+'">';
+cadena=cadena+'<input type="hidden" name="materia" value="'+materia+'">';
+cadena=cadena+'<input type="hidden" name="trimestre" value="'+trimestre+'">';
+cadena=cadena+'<input type="hidden" name="curso" value="'+curso+'">';
+cadena=cadena+'<input type="hidden" name="alumno" value="'+alumno+'">';
+cadena=cadena+'</form>';
+//alert(cadena);
+$(cadena).submit();
+});
 });
 </script>
 <?php require ('config.php'); ?>

@@ -116,8 +116,7 @@ switch (etapa) {
   }
 
     });
-  notaFinal=$("#notaFinal").val();
-alert(notaFinal);
+
     $("#instrumento").change(function(){
 instrumento=$("#instrumento").val();
  $.ajax({
@@ -145,7 +144,7 @@ if (($.isNumeric(valor))&&(valor<11)&&(valor>(-1))){
       data: {idNota: idNota, valor: valor,materia: materia, curso: curso},
       success: function(opciones){
         //$("#tablaDatos").html(opciones);
-alert("Nota cambiada a "+valor);
+
       }
  });
          $.ajax({
@@ -165,7 +164,9 @@ else{
 alert("Introduzca un valor de nota adecuado");
 }
 });
-
+$(document).on('click', '#pdfIndividual', function() {
+alert("Materia: "+materia+", grupo: "+grupo+", curso: "+curso+", trimestre: "+trimestre+", alumno: "+alumno);
+});
 });
 </script>
 <?php require ('config.php'); ?>

@@ -106,14 +106,10 @@ echo"><option value=\"\"></option>";
 for ($i=1;$i<10;$i++){
 echo "<option value=\"$i\">$i</option>";
 }
-echo"</select></td><td>";
-$comp=mysqli_query($link,"SELECT * FROM competencias")or die (mysqli_error($link));
-while($compet=mysqli_fetch_array($comp)){
-echo "<input type=\"checkbox\" name=\"$nCont\" class=\"competencia\" value=\"".$compet['id']."\">".$compet['codigo'];
-//echo $compet['competencia'];
-}
+echo"</select></td>";
 
-echo"</td></tr></table><div id=\"Tabla".$nCont."\"></div>";
+
+echo"</tr></table><div id=\"Tabla".$nCont."\"></div>";
 
 
 }

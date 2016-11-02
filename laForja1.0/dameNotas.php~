@@ -44,20 +44,20 @@ while($dameNotas=mysqli_fetch_array($buscaNotas)){
 $cuenta++;
 $nota=$nota+$dameNotas['nota'];
 }
-echo "<td>".utf8_decode($encuentraInstrumentos['instrumento'])."(Varias notas) Media: ".$nota/$cuenta."</td>";
+echo "<td>".utf8_encode($encuentraInstrumentos['instrumento'])."(Varias notas) Media: ".$nota/$cuenta."</td>";
 
 }
 if (mysqli_num_rows($buscaNotas)==1){
 while($dameNotas=mysqli_fetch_array($buscaNotas)){
 
 //echo "<td>".$encuentraInstrumentos['instrumento'].": ".$dameNotas['nota']."</td>";
-echo "<td>".$encuentraInstrumentos['instrumento']."(Nota única): ".$dameNotas['nota']."</td>";
+echo "<td>".utf8_encode($encuentraInstrumentos['instrumento'])."(Nota única): ".$dameNotas['nota']."</td>";
 }
 
 
 }
 if (mysqli_num_rows($buscaNotas)==0){
-echo "<td>".$encuentraInstrumentos['instrumento']."(No hay notas)</td>";
+echo "<td>".utf8_encode($encuentraInstrumentos['instrumento'])."(No hay notas)</td>";
 }
 }
 echo "</tr>";

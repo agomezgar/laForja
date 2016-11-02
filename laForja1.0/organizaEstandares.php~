@@ -23,9 +23,31 @@ valor=$(this).val();
 //valor=$(this).val();
 //alert(valor);
 //$("#cuerpo").load(valor);
- // window.location.href='index.php';
+  window.location.href='seleccionar.php';
 });
-$(document).on('change', '[type=checkbox]', function() {
+
+
+$(document).on('change', '.competencia [type=checkbox]', function() {
+// code here
+//i=$(this).attr('class');
+comprobado=$(this).prop('checked');
+//alert(comprobado);
+estandar=$(this).attr('name');
+competencia=$(this).val();
+//alert("Competencia: "+competencia+" para estandar: "+estandar);
+ $.ajax({
+      url:"procesaCompetencia.php",
+      type: "POST",
+    data:{contenido: estandar, activado: comprobado, competencia: competencia},
+      success: function(opciones){
+      // $("#asignaEstandares").html(opciones);
+//alert ("Datos actualizados");
+
+      }
+    });
+}); 
+
+$(document).on('change', '#instru [type=checkbox]', function() {
 // code here
 i=$(this).attr('class');
 comprobado=$(this).prop('checked');
@@ -68,7 +90,9 @@ $("input:checkbox."+i).prop('checked',false);
 
       }
     });
+
 }); 
+
 });
 </script>
 <?php require ('config.php'); ?>

@@ -63,8 +63,8 @@ echo "<td>".utf8_encode($encuentraInstrumentos['instrumento'])."(No hay notas)</
 echo "</tr>";
 
 }
-echo "</table> <input type=\"submit\" id=\"grabar\" value=\"Grabar\">";
-
+echo "</table>";
+//echo "<input type=\"submit\" id=\"grabar\" value=\"Grabar\">";
 
 
 ?>
