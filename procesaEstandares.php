@@ -47,7 +47,7 @@ $idInstrumento=$encInst['idinstrumento'];
 $buscaTextInst=mysqli_query($link,"SELECT * FROM $nombreTablaInstrumentos WHERE id=$idInstrumento");
 while($encTextInst=mysqli_fetch_array($buscaTextInst)){
 $textoInstrumento=$encTextInst['instrumento'];
-echo $textoInstrumento."<br>";
+echo utf8_encode($textoInstrumento)."<br>";
 }
 }
 echo"</td></tr>";

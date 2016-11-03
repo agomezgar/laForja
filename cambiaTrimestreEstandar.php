@@ -29,7 +29,7 @@ if (mysqli_query($link,$sql)){
 
 $nuevoIdInstrumento=mysqli_query($link,"SELECT * FROM $nombreTablaInstrumentos ORDER BY id DESC LIMIT 1");
 while($nuevaId=mysqli_fetch_array($nuevoIdInstrumento)){
-echo "El instrumento ".$textoInstrumento." correspondiente al contenido".$contenido."se ha añadido al trimestre ".$trimestre;
+echo "El instrumento ".utf8_encode($textoInstrumento)." correspondiente al contenido".$contenido."se ha añadido al trimestre ".$trimestre;
 $nuevaIdInstrumento=$nuevaId['id'];
 echo " con la id ". $nuevaIdInstrumento;
 $borraEstandar="DELETE FROM $nombreTablaOrganizacionEstandares WHERE idestandar = '$estandar'";
