@@ -68,6 +68,7 @@ instrumento=$(textos)[i].value;
            $.ajax({
       url:"grabaInstrumento.php",
       type: "POST",
+      async: false,
       data: {contenido: contenido, criterio: instrumento, trimestre: trimestre},
       success: function(opciones){
   //$("#estandares").html(opciones);
