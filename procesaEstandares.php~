@@ -39,7 +39,7 @@ $buscaTexto=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE id=$i
 while($encuentraTexto=mysqli_fetch_array($buscaTexto)){
 echo "<td>".utf8_encode($encuentraTexto['estandar'])."</td>";
 }
-echo "<td><select class=\"cambiaInstrumento\" id=\"".$idEstandar."\">";
+echo "<td><select class=\"cambiaTrimestre\" id=\"".$idEstandar."\">";
 echo $cadena."</select></td><td>";
 $buscaInstrumentos=mysqli_query($link,"SELECT * FROM $nombreTablaOrganizacionEstandares WHERE idestandar=$idEstandar");
 while($encInst=mysqli_fetch_array($buscaInstrumentos)){

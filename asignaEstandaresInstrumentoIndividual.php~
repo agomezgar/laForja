@@ -43,7 +43,7 @@ if (mysqli_num_rows($compruebaInst)>0){
 $concuerda='checked=\"checked\"';}
 else{
 $concuerda='';}
-echo"<p> <input type=\"checkbox\" ".$concuerda." id=\"".$prioridad."\" name=\"".$idInst."\" class=\"$idestandar\">".utf8_encode($instrumento)." <input type=\"hidden\" name=\"".$idInst."\" value=\"".$prioridad."\"></p>";
+echo"<p> <input type=\"checkbox\" ".$concuerda." id=\"".$prioridad."\" name=\"".$idInst."\" class=\"$idestandar\">".$instrumento." <input type=\"hidden\" name=\"".$idInst."\" value=\"".$prioridad."\"></p>";
 
 }
 echo "</td></tr>";
@@ -56,5 +56,5 @@ echo "</td></tr>";
 
 }
 echo "</table>";
- <input type=\"submit\" id=\"nuevoInstrumentoGrabado\" value=\"He terminado\">
+ echo "<input type=\"submit\" id=\"nuevoInstrumentoGrabado\" value=\"He terminado\">";
 ?>

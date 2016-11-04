@@ -96,6 +96,7 @@ estandar=$(this).attr('id');
        alert(opciones);
       },
    error: function (xhr, ajaxOptions, thrownError) {
+alert ("Error");
         alert(xhr.status);
         alert(thrownError);
       }

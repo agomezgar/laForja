@@ -16,7 +16,7 @@ $buscaProfe=mysqli_query($link,"SELECT * FROM profesorespormateria WHERE nombre=
 $sql=mysqli_query($link,"SELECT * FROM $nombreTablaInstrumentos WHERE trimestre='$trimestre'")or die (mysqli_error($link));
 echo "<select><option value=\"\">Indique instrumento de evaluación</option>";
 while($encuentraInstrumentos = mysqli_fetch_array($sql)) {
-echo "<option value=\"".$encuentraInstrumentos['id']."\">".utf8_encode($encuentraInstrumentos['instrumento'])."</option>";
+echo "<option value=\"".$encuentraInstrumentos['id']."\">".$encuentraInstrumentos['instrumento']."</option>";
 }
 echo "</select>";
 ?>

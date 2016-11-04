@@ -87,13 +87,17 @@ $(document).on('change', '.cambiaTrimestre', function() {
 
 valor=$(this).val();
 estandar=$(this).attr('id');
-alert("Cambia Estandar "+estandar+"al trimestre "+valor);
+//alert("Cambia Estandar "+estandar+"al trimestre "+valor);
  $.ajax({
       url:"cambiaTrimestreEstandar.php",
       type: "POST",
       data: { estandar:estandar, materia: materia, trimestre: valor,curso: curso},
       success: function(opciones){
        alert(opciones);
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
       }
 
  });
