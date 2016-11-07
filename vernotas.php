@@ -7,6 +7,37 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 $(document).ready(function(){
     $("#grupo").change(function(){
          $("#materia").prop("disabled", false);
+etapa=$("#grupo").val();
+//alert(etapa);
+grupo=$("#grupo").find(":selected").text()
+curso="";
+switch (etapa) { 
+	case '667': 
+		curso=grupo.substring(0,1);
+		break;
+	case '31': 
+		curso=parseInt(grupo.substring(0,1))+4;
+		break;
+	case '1153': 
+		curso=parseInt(grupo.substring(0,1))+6;
+		break;	
+}
+
+  $.ajax({
+      url:"cargaMaterias.php",
+      type: "POST",
+      data: {curso: curso},
+      success: function(opciones){
+
+        $("#materia").html(opciones);
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
+
+
     });
 
 

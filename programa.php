@@ -12,6 +12,21 @@ $(document).ready(function(){
 cuentaTotal=0;
     $("#curso").change(function(){
          $("#materia").prop("disabled", false);
+curso=$("#curso").val();
+
+
+           $.ajax({
+      url:"cargaMaterias.php",
+      type: "POST",
+      data: {curso: $("#curso").val()},
+      success: function(opciones){
+        $("#materia").html(opciones);
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
     });
 
 

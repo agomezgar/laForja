@@ -7,6 +7,21 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 $(document).ready(function(){
     $("#nivel").change(function(){
          $("#materia").prop("disabled", false);
+curso=$("#nivel").val();
+
+
+           $.ajax({
+      url:"cargaMaterias.php",
+      type: "POST",
+      data: {curso: curso},
+      success: function(opciones){
+        $("#materia").html(opciones);
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
 
     });
 
