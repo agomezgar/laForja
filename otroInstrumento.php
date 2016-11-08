@@ -7,7 +7,26 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 <script>
 $(document).ready(function(){
 
+$("#curso").change(function(){
+   $("#materia").prop("disabled", false);
+curso=$("#curso").val();
 
+
+           $.ajax({
+      url:"cargaMaterias.php",
+      type: "POST",
+      data: {curso: curso},
+      success: function(opciones){
+        $("#materia").html(opciones);
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
+
+
+});
 
     $("#materia").change(function(){
 
@@ -190,22 +209,22 @@ $opcionesMateria.='<option value="'.$encuentraMaterias["codigo"].'">'.utf8_encod
 }
 ?>
 <input type="hidden" id="profesor" value="<?php echo $_SESSION['profesor'];?>">
-
-<select name="materia" id="materia">
+<select name="curso" id="curso">
+<option  value="" selected="selected">Seleccione nivel</option>
+<option  value="1" >1ºESO</option>
+<option  value="2" >2ºESO</option>
+<option  value="3" >3ºESO</option>
+<option  value="4" >4ºESO</option>
+<option  value="5" >1ºBACH</option>
+<option  value="6" >2ºBACH</option>
+<option  value="7" >1ºFPB</option>
+<option  value="8" >2ºFPB</option>
+</select>
+<select name="materia" id="materia" disabled="disabled">
 <option value="">Seleccione materia</option>
 <?php echo $opcionesMateria;?>
 </select>
-<select name="curso" id="curso" disabled="disabled">
-<option value="">Seleccione nivel</option>
-<option value="1">1º ESO</option>
-<option value="2">2º ESO</option>
-<option value="3">3º ESO</option>
-<option value="4">4º ESO</option>
-<option value="5">1º BACH</option>
-<option value="6">2º BACH</option>
-<option value="7">1º FPB</option>
-<option value="8">2º FBP</option>
-</select>
+
 <select name="trimestre" id="trimestre" disabled="disabled">
 <option value="">Seleccione trimestre</option>
 <option value="1">1º</option>
