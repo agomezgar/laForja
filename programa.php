@@ -10,6 +10,7 @@ echo "<meta http-equiv=\"refresh\" content=\"3;URL=index.php\">";
 <script>
 $(document).ready(function(){
 cuentaTotal=0;
+
     $("#curso").change(function(){
          $("#materia").prop("disabled", false);
 curso=$("#curso").val();
@@ -60,6 +61,7 @@ competencia=$(this).val();
 
  });
 $(document).on('click', '.grabaInst', function() {
+terminado=true;
 	nombreTrim="#trim"+$(this).attr('name');
 contenido=$(this).attr('name');
 if($(nombreTrim).val()==""){
@@ -81,6 +83,23 @@ for (i=0;i<$(textos).length;i++){
 //alert ($(textos)[i].value);
 instrumento=$(textos)[i].value;
            $.ajax({
+      url:"compruebaInstrumento.php",
+      type: "POST",
+      async: false,
+      data: {contenido: contenido, criterio: instrumento, trimestre: trimestre},
+      success: function(opciones){
+
+if ($.trim(opciones)=='no'){
+alert("Ya hay un instrumento con el nombre "+instrumento);
+terminado=false;
+}
+}
+ });
+}
+if (terminado){
+for (i=0;i<$(textos).length;i++){
+instrumento=$(textos)[i].value;
+           $.ajax({
       url:"grabaInstrumento.php",
       type: "POST",
       async: false,
@@ -89,14 +108,20 @@ instrumento=$(textos)[i].value;
   //$("#estandares").html(opciones);
       }
     });
-
-
 }
+
 alert("Instrumentos grabados");
-nombreCapa="#Tabla"+contenido;
-$(nombreCapa).find('input, textarea, button, select').attr('disabled','disabled');
 }
 
+
+nombreCapa="#Tabla"+contenido;
+if (terminado){$(nombreCapa).find('input, textarea, button, select').attr('disabled','disabled');}
+
+ 
+  //$("#estandares").html(opciones);
+      
+
+}
 
 
  });
