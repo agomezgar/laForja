@@ -35,7 +35,7 @@ $pesoPAvanzado=($cargaPrioridad['peso'])/100;
 }
 }
 //Contamos los estandares
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
+$sql=mysqli_query($link,"SELECT prioridad FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar,prioridad")or die ("Error calculando prioridades: ".mysqli_error($link));
 //Ponemos a 0 la cuenta de estándares B,A,I;
 $nestandarB=0;
 $nestandarA=0;
@@ -121,7 +121,7 @@ $pdf->MultiCell(0,5,utf8_decode($textoNotas),1);
 }
 
 //BUSCAMOS ESTANDARES Y NOTAS CORRESPONDIENTES
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
+$sql=mysqli_query($link,"SELECT idestandar, prioridad FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar,prioridad")or die ("Error buscando estandares y sus notas: ".mysqli_error($link));
 while($buscaSql=mysqli_fetch_array($sql)){
 $notaEstandar=0;
 $numeroInstrumentos=0;
