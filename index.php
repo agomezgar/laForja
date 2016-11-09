@@ -50,7 +50,7 @@ CleanFiles("evaluacionextra");
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Proyecto Vulcano</title>
+<title>Proyecto laForja</title>
 </head>
 
 <body>
