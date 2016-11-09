@@ -77,6 +77,7 @@ $("#tablaDatos").html(opciones);
     });
  
 $(document).on('click', '#datosInst td', function() {
+$(this).unbind('click');
  instrumento=$(this).attr('id');
 clase=$(this).attr('class');
 if(!($(this).is("#grabarInst"))){
@@ -114,6 +115,7 @@ $("#tablaDatos").html(opciones);
  }
 });
 $(document).on('click', '#datosInst :button', function() {
+$(this).unbind('click');
 contenido=$(this).attr('class');
 materia=$("#materia").val();
 curso=$("#curso").val();
