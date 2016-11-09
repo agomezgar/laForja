@@ -6,12 +6,9 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 <script src="./scriptComplementario.js" language="javascript"></script>
 <script>
 $(document).ready(function(){
-
 $("#curso").change(function(){
    $("#materia").prop("disabled", false);
 curso=$("#curso").val();
-
-
            $.ajax({
       url:"cargaMaterias.php",
       type: "POST",
@@ -24,15 +21,12 @@ curso=$("#curso").val();
         alert(thrownError);
       }
     });
-
-
 });
-
     $("#materia").change(function(){
-
-
 profesor=$("#profesor").val();
 materia=$("#materia").val();
+curso=$("#curso").val();
+
   $.ajax({
       url:"verProfesor.php",
       type: "POST",
@@ -47,11 +41,23 @@ $("#curso").prop("disabled", false);
       }
   
     });
-
+$.ajax({
+      url:"compruebaMateriaCurso.php",
+      type: "POST",
+      data: {materia:materia,curso:curso},
+      success: function(opciones){
+        if (opciones==0){
+alert("No hay programación preparada para esta materia o curso");
+$("#trimestre").prop("disabled", true);
+}else{
+$("#trimestre").prop("disabled", false);
+}
+      }
+  
     });
 
+    });
   $("#trimestre").change(function(){
-
 materia=$("#materia").val();
 curso=$("#curso").val();
 trimestre=$("#trimestre").val();
@@ -68,26 +74,8 @@ $("#tablaDatos").html(opciones);
       }
   
     });
-
     });
-  $("#curso").change(function(){
-materia=$("#materia").val();
-curso=$("#curso").val();
-  $.ajax({
-      url:"compruebaMateriaCurso.php",
-      type: "POST",
-      data: {materia:materia,curso:curso},
-      success: function(opciones){
-        if (opciones==0){
-alert("No hay programación preparada para esta materia o curso");
-$("#trimestre").prop("disabled", true);
-}else{
-$("#trimestre").prop("disabled", false);
-}
-      }
-  
-    });
-});
+ 
 $(document).on('click', '#datosInst td', function() {
  instrumento=$(this).attr('id');
 clase=$(this).attr('class');
@@ -120,7 +108,6 @@ $("#tablaDatos").html(opciones);
       }
   
     });
-
 }else{
 //alert("Instrumento conservado");
 }
@@ -132,7 +119,6 @@ materia=$("#materia").val();
 curso=$("#curso").val();
 trimestre=$("#trimestre").val();
 instrumento=prompt("Introduzca instrumento de evaluación", "Instrumento");
-
 //$(this).prop('disabled','true');
 //alert(instrumento);
 $.ajax({
@@ -148,11 +134,9 @@ $("#tablaDatos").html(opciones);
       }
   
     });
-
 });
 $(document).on('change', '[type=checkbox]', function() {
 // code here
-
 comprobado=$(this).prop('checked');
 instrumento=$(this).attr('name');
 trimestre=$("#trimestre").val();
@@ -160,9 +144,6 @@ estandar=$(this).attr('class');
 materia=$("#materia").val();
 curso=$("#curso").val();
 prioridad=$(this).attr('id');
-
-
-
 //alert("Comprobado: "+comprobado);
 //alert("Id instrumento: "+instrumento);
 //alert("Id estandar: "+estandar);
@@ -177,7 +158,6 @@ prioridad=$(this).attr('id');
       success: function(opciones){
      // $("#tablaDatos").html(opciones);
 //alert ("Datos actualizados");
-
       },
    error: function (xhr, ajaxOptions, thrownError) {
         alert(xhr.status);
@@ -188,7 +168,6 @@ prioridad=$(this).attr('id');
 }); 
 $(document).on('click', '#nuevoInstrumentoGrabado', function() {
 window.location.href='seleccionar.php';
-
 });
 });
 </script>
@@ -199,13 +178,10 @@ window.location.href='seleccionar.php';
 //cargamos materias en select materia
    include('conectarse.php');
    $link=Conectarse();
-
-
 $opcionesMateria="";
  $result = mysqli_query($link,"SELECT * FROM materias")or die (mysqli_error($link));
 while($encuentraMaterias = mysqli_fetch_array($result)) {
 $opcionesMateria.='<option value="'.$encuentraMaterias["codigo"].'">'.utf8_encode($encuentraMaterias["materia"]).'</option>';
-
 }
 ?>
 <input type="hidden" id="profesor" value="<?php echo $_SESSION['profesor'];?>">
