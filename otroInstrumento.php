@@ -123,6 +123,9 @@ trimestre=$("#trimestre").val();
 instrumento=prompt("Introduzca instrumento de evaluación", "Instrumento");
 //$(this).prop('disabled','true');
 //alert(instrumento);
+if (!instrumento.trim()){
+alert("Debe especificar un nombre para el nuevo instrumento de evaluación");
+}else{
 $.ajax({
       url:"asignaEstandaresInstrumentoIndividual.php",
       type: "POST",
@@ -136,6 +139,7 @@ $("#tablaDatos").html(opciones);
       }
   
     });
+}
 });
 $(document).on('change', '[type=checkbox]', function() {
 // code here
