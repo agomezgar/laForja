@@ -5,6 +5,8 @@ session_start();
  $trimestre=$_POST["trimestre"];
 $materia=$_POST["materia"];
 $curso=$_POST["curso"];
+$_SESSION['curso']=$curso;
+$_SESSION['materia']=$materia;
 $nombreTablaInstrumentos=$materia."Instrumentos".$curso;
 $nombreTablaExamenes=$materia."notas".$curso;
 $nombreTablaEstandares=$materia."organizacionestandares".$curso;

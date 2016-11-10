@@ -119,6 +119,7 @@ $(this).unbind('click');
 contenido=$(this).attr('class');
 materia=$("#materia").val();
 curso=$("#curso").val();
+nuevo=true;
 trimestre=$("#trimestre").val();
 instrumento=prompt("Introduzca instrumento de evaluación", "Instrumento");
 //$(this).prop('disabled','true');
@@ -126,6 +127,19 @@ instrumento=prompt("Introduzca instrumento de evaluación", "Instrumento");
 if (!instrumento.trim()){
 alert("Debe especificar un nombre para el nuevo instrumento de evaluación");
 }else{
+       $.ajax({
+      url:"compruebaInstrumento.php",
+      type: "POST",
+      async: false,
+      data: {contenido: contenido, criterio: instrumento, trimestre: trimestre},
+      success: function(opciones){
+//alert(opciones);
+if ($.trim(opciones)=='no'){
+alert("Ya hay un instrumento con el nombre "+instrumento);
+nuevo=false;
+}
+}
+ });if (nuevo){
 $.ajax({
       url:"asignaEstandaresInstrumentoIndividual.php",
       type: "POST",
@@ -139,7 +153,7 @@ $("#tablaDatos").html(opciones);
       }
   
     });
-}
+}}
 });
 $(document).on('change', '[type=checkbox]', function() {
 // code here
