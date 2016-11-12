@@ -27,6 +27,36 @@ $.ajax({
   $("#selectAlumnos").change(function(){
 
 $("#materia").prop("disabled", false);
+etapa=$("#grupo").val();
+//alert(etapa);
+grupo=$("#grupo").find(":selected").text()
+curso="";
+switch (etapa) { 
+	case '667': 
+		curso=grupo.substring(0,1);
+		break;
+	case '31': 
+		curso=parseInt(grupo.substring(0,1))+4;
+		break;
+	case '1153': 
+		curso=parseInt(grupo.substring(0,1))+6;
+		break;	
+}
+
+  $.ajax({
+      url:"cargaMaterias.php",
+      type: "POST",
+      data: {curso: curso},
+      success: function(opciones){
+
+        $("#materia").html(opciones);
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
+
 });
     $("#materia").change(function(){
 
@@ -165,7 +195,16 @@ alert("Introduzca un valor de nota adecuado");
 }
 });
 $(document).on('click', '#pdfIndividual', function() {
-alert("Materia: "+materia+", grupo: "+grupo+", curso: "+curso+", trimestre: "+trimestre+", alumno: "+alumno);
+//alert("Materia: "+materia+", grupo: "+grupo+", curso: "+curso+", trimestre: "+trimestre+", alumno: "+alumno);
+cadena='<form method="post" action="dameNotasIndividualpdf.php" target="_blank">';
+cadena=cadena+'<input type="hidden" name="grupo" value="'+grupo+'">';
+cadena=cadena+'<input type="hidden" name="materia" value="'+materia+'">';
+cadena=cadena+'<input type="hidden" name="trimestre" value="'+trimestre+'">';
+cadena=cadena+'<input type="hidden" name="curso" value="'+curso+'">';
+cadena=cadena+'<input type="hidden" name="alumno" value="'+alumno+'">';
+cadena=cadena+'</form>';
+//alert(cadena);
+$(cadena).submit();
 });
 });
 </script>

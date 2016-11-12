@@ -1,4 +1,4 @@
-<?php session_start(); 
+cd <?php session_start(); 
 if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";echo "<meta http-equiv=\"refresh\" content=\"5;URL=index.php\">";}
 ?>
 <script src="./js/jquery-3.1.1.min.js"></script>
@@ -204,7 +204,7 @@ cadena=cadena+'<input type="hidden" name="curso" value="'+curso+'">';
 cadena=cadena+'<input type="hidden" name="alumno" value="'+alumno+'">';
 cadena=cadena+'</form>';
 //alert(cadena);
-$(cadena).submit();
+$(cadena).appendTo('body').submit();
 });
 });
 </script>
