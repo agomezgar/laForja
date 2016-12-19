@@ -34,9 +34,9 @@ $arch=$dir.$_FILES['tablacsv']['name'];
 
 	$carga="LOAD DATA LOCAL INFILE '$arch' INTO TABLE matriculas CHARACTER SET latin1 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES";
 echo "Grabando archivos...";
-mysqli_query($link,$carga) or die (mysql_error());
+mysqli_query($link,$carga) or die (mysqli_error($link));
 
-	   $gruposinstituto = mysqli_query($link,"SELECT DISTINCT grupo FROM matriculas ");
+	   $gruposinstituto = mysqli_query($link,"SELECT DISTINCT grupo FROM matriculas ")or die ("Error".mysql_error());
 
 while($row = mysqli_fetch_array($gruposinstituto)) {
 echo $row['grupo'];

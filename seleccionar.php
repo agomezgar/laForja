@@ -90,15 +90,15 @@ header ("Location: ./admin/");
 ?>
 <div id="cabecera">
 <input type="hidden" id="perfil" value="<?php echo $_SESSION['perfil'];?>">
-<table>
+<table width="100%">
 <tr>
- <td><input type="button" id="programar" value="Programar" name="programa.php"onclick="alert('¡Cuidado! Cualquier información anterior relativa al curso y materia seleccionados se borrará. Sea cauto.')"></td>
- <td><input type="button" value="Poner notas" name="ponernotas.php"> </td>
- <td><input type="button" value= "Ver notas" name="vernotas.php"> </td>
-<td><input type="button" value="Ver notas por alumno" name="vernotasAlumno.php"> </td>
-<td><input type="button" value="Añadir instrumentos de evaluación" name="otroInstrumento.php"> </td>
-<td><input type="button" value="Cambiar estándares de trimestre" name="cambiarEstandares.php"> </td>
- <td><input type="button" value="Justificar calificaciones" name="vercalificaciones.php"></td>
+ <td align="center"><input type="button" id="programar" value="Programar" name="programa.php"onclick="alert('¡Cuidado! Cualquier información anterior relativa al curso y materia seleccionados se borrará. Sea cauto.')"></td>
+ <td align="center"><input type="button" value="Poner notas" name="ponernotas.php"> </td>
+ <td align="center"><input type="button" value= "Ver notas" name="vernotas.php"> </td>
+<td align="center"><input type="button" value="Ver notas por alumno" name="vernotasAlumno.php"> </td>
+<td align="center"><input type="button" value="Añadir instrumentos de evaluación" name="otroInstrumento.php"> </td><td  align="center"><input type="button" value="Cambiar estándares de trimestre" name="cambiarEstandares.php"> </td>
+ <td align="center"><input type="button" value="Justificar calificaciones" name="vercalificaciones.php"></td>
+ <td  align="center"><input type="button" value="Imprimir Programación" name="imprimirProgramacion.php"></td></tr>
 </table>
 </div>
 <div id="cuerpo">
