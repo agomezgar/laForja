@@ -6,6 +6,8 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 <script>
 $(document).ready(function(){
     $("#nivel").change(function(){
+$("#tablaEstandares").html("");
+$("#trimestre").val("");
          $("#materia").prop("disabled", false);
 curso=$("#nivel").val();
 
@@ -27,7 +29,8 @@ curso=$("#nivel").val();
 
 
     $("#materia").change(function(){
-
+$("#tablaEstandares").html("");
+$("#trimestre").val("");
 $("#trimestre").prop("disabled", false);
 profesor=$("#profesor").val();
 materia=$("#materia").val();

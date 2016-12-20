@@ -5,34 +5,17 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 <script src="./scriptComplementario.js" language="javascript"></script>
 <script>
 $(document).ready(function(){
-    $("#grupo").change(function(){
-//$("#materia").val("0");
-$("#tablaExamen").html("");
-$("#instrumento").val("0");
-$("#trimestre").val("0");
-         $("#materia").prop("disabled", false);
-etapa=$("#grupo").val();
-//alert(etapa);
-grupo=$("#grupo").find(":selected").text()
-curso="";
-switch (etapa) { 
-	case '667': 
-		curso=grupo.substring(0,1);
-		break;
-	case '31': 
-		curso=parseInt(grupo.substring(0,1))+4;
-		break;
-	case '1153': 
-		curso=parseInt(grupo.substring(0,1))+6;
-		break;	
-}
 
-  $.ajax({
+    $("#nivel").change(function(){
+         $("#materia").prop("disabled", false);
+curso=$("#nivel").val();
+
+
+           $.ajax({
       url:"cargaMaterias.php",
       type: "POST",
       data: {curso: curso},
       success: function(opciones){
-
         $("#materia").html(opciones);
       },
    error: function (xhr, ajaxOptions, thrownError) {
@@ -45,12 +28,11 @@ switch (etapa) {
 
 
     $("#materia").change(function(){
-$("#tablaExamen").html("");
-$("#instrumento").val("0");
-$("#trimestre").val("0");
+
 $("#trimestre").prop("disabled", false);
 profesor=$("#profesor").val();
 materia=$("#materia").val();
+curso=$("#nivel").val();
   $.ajax({
       url:"verProfesor.php",
       type: "POST",
@@ -65,39 +47,47 @@ $("#trimestre").prop("disabled", false);
       }
   
     });
-    });
-  $("#trimestre").change(function(){
-$("#instrumento").prop("disabled", false);
-$("#tablaExamen").html("");
-$("#instrumento").val("0");
-
-materia=$("#materia").val();
-etapa=$("#grupo").val();
-grupo=$("#grupo").find(":selected").text()
-trimestre=$("#trimestre").val();
-curso="";
-switch (etapa) { 
-	case '667': 
-		curso=grupo.substring(0,1);
-		break;
-	case '31': 
-		curso=parseInt(grupo.substring(0,1))+4;
-		break;
-	case '1153': 
-		curso=parseInt(grupo.substring(0,1))+6;
-		break;	
-}
-
-
-         $.ajax({
-      url:"procesaInstrumento.php",
+$.ajax({
+      url:"compruebaMateriaCurso.php",
       type: "POST",
-      data: {grupo: grupo,materia: materia, trimestre: trimestre,curso:curso},
+      data: {materia:materia,curso:curso},
       success: function(opciones){
-        $("#instrumento").html(opciones);
+        if (opciones==0){
+alert("No hay programación grabada para esta materia en este nivel");
+$("#trimestre").prop("disabled", true);
+}else{
+$("#trimestre").prop("disabled", false);
+}
       }
   
     });
+    });
+  $("#trimestre").change(function(){
+//$("#instrumento").prop("disabled", false);
+materia=$("#materia").val();
+curso=$("#nivel").val();
+
+trimestre=$("#trimestre").val();
+
+
+//alert(materia+", "+curso+", "+trimestre);
+
+         $.ajax({
+      url:"procesaProgramacion.php",
+      type: "POST",
+      data: {curso: curso,materia: materia, trimestre: trimestre},
+      success: function(opciones){
+        $("#tablaProgramacion").html(opciones);
+
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+  
+    });
+
+/*
     $("#instrumento").change(function(){
 instrumento=$("#instrumento").val();
  $.ajax({
@@ -109,20 +99,55 @@ instrumento=$("#instrumento").val();
       }
  });
     });
+*/
     });
-$(document).on('click', '#grabar', function() {
 
+$(document).on('change', '.cambiaTrimestre', function() {
+
+valor=$(this).val();
+estandar=$(this).attr('id');
+//alert("Cambia Estandar "+estandar+"al trimestre "+valor);
  $.ajax({
-      url:"grabaExamen.php",
+      url:"cambiaTrimestreEstandar.php",
       type: "POST",
-      data: { grupo: grupo, alumno: alumno, nota: nota, nombreTablaExamenes: nombreTablaExamenes},
+      data: { estandar:estandar, materia: materia, trimestre: valor,curso: curso},
       success: function(opciones){
        alert(opciones);
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+alert ("Error");
+        alert(xhr.status);
+        alert(thrownError);
       }
 
  });
+
  });
+
+$(document).on('click', '#pdfProgramacion', function() {
+
+//alert("Materia: "+materia+", grupo: "+grupo+", curso: "+curso+", trimestre: "+trimestre+", alumno: "+alumno);
+cadena='<form method="post" action="dameProgramacionPdf.php" target="_blank">';
+
+cadena=cadena+'<input type="hidden" name="materia" value="'+materia+'">';
+cadena=cadena+'<input type="hidden" name="trimestre" value="'+trimestre+'">';
+cadena=cadena+'<input type="hidden" name="curso" value="'+curso+'">';
+
+cadena=cadena+'</form>';
+//alert(cadena);
+//$('body').append(cadena)
+//$(cadena).appendTo('body');
+$(cadena).appendTo(document.body).submit();
 });
+$(".form").submit(function(e){
+    e.preventDefault();
+    $.post("submit.php", {data: textData}, function(){
+        history.go(-1);
+    });
+    return false;
+});
+});
+
 </script>
 <?php require ('config.php'); ?>
 <div id="elige">
@@ -133,12 +158,7 @@ $(document).on('click', '#grabar', function() {
    include('conectarse.php');
    $link=Conectarse();
 
-$opcionesGrupos="";
- $result = mysqli_query($link,"SELECT DISTINCT grupo,etapa FROM matriculas ORDER BY grupo");
-while($encuentraGrupos = mysqli_fetch_array($result)) {
-$opcionesGrupos.='<option value="'.$encuentraGrupos["etapa"].'">'.utf8_encode($encuentraGrupos["grupo"]).'</option>';
 
-}
 $opcionesMateria="";
  $result = mysqli_query($link,"SELECT * FROM materias")or die (mysqli_error($link));
 while($encuentraMaterias = mysqli_fetch_array($result)) {
@@ -147,9 +167,16 @@ $opcionesMateria.='<option value="'.$encuentraMaterias["codigo"].'">'.utf8_encod
 }
 ?>
 <input type="hidden" id="profesor" value="<?php echo $_SESSION['profesor'];?>">
-<select name="grupo" id="grupo">
-<option  value="" selected="selected">Seleccione grupo</option>
-<?php echo $opcionesGrupos;?>
+<select name="nivel" id="nivel">
+<option  value="" selected="selected">Seleccione nivel</option>
+<option  value="1" >1ºESO</option>
+<option  value="2" >2ºESO</option>
+<option  value="3" >3ºESO</option>
+<option  value="4" >4ºESO</option>
+<option  value="5" >1ºBACH</option>
+<option  value="6" >2ºBACH</option>
+<option  value="7" >1ºFPB</option>
+<option  value="8" >2ºFPB</option>
 </select>
 <select name="materia" id="materia" disabled="disabled">
 <option value="">Seleccione materia</option>
@@ -161,11 +188,8 @@ $opcionesMateria.='<option value="'.$encuentraMaterias["codigo"].'">'.utf8_encod
 <option value="2">2º</option>
 <option value="3">3º</option>
 </select>
-<select name="instrumento" id="instrumento" disabled="disabled">
-<option value="">Seleccione instrumento de evaluación</option>
 
-</select>
 </div>
-<div id="tablaExamen">
+<div id="tablaProgramacion">
 
 </div>

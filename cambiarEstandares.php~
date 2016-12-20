@@ -6,13 +6,30 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 <script>
 $(document).ready(function(){
     $("#nivel").change(function(){
+$("#tablaEstandares").html("");
+$("#trimestre").val("");
          $("#materia").prop("disabled", false);
+curso=$("#nivel").val();
+
+
+           $.ajax({
+      url:"cargaMaterias.php",
+      type: "POST",
+      data: {curso: curso},
+      success: function(opciones){
+        $("#materia").html(opciones);
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
 
     });
 
 
     $("#materia").change(function(){
-
+$("#tablaEstandares").html("");
 $("#trimestre").prop("disabled", false);
 profesor=$("#profesor").val();
 materia=$("#materia").val();
@@ -96,6 +113,7 @@ estandar=$(this).attr('id');
        alert(opciones);
       },
    error: function (xhr, ajaxOptions, thrownError) {
+alert ("Error");
         alert(xhr.status);
         alert(thrownError);
       }

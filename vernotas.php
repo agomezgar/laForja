@@ -7,6 +7,9 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 $(document).ready(function(){
     $("#grupo").change(function(){
          $("#materia").prop("disabled", false);
+$("#tablaDatos").html("");
+$("#materia").val("");
+$("#trimestre").val("");
 etapa=$("#grupo").val();
 //alert(etapa);
 grupo=$("#grupo").find(":selected").text()
@@ -44,6 +47,8 @@ switch (etapa) {
     $("#materia").change(function(){
 
 $("#trimestre").prop("disabled", false);
+$("#tablaDatos").html("");
+$("#trimestre").val("");
 profesor=$("#profesor").val();
 materia=$("#materia").val();
   $.ajax({

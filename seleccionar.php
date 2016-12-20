@@ -96,7 +96,10 @@ header ("Location: ./admin/");
  <td align="center"><input type="button" value="Poner notas" name="ponernotas.php"> </td>
  <td align="center"><input type="button" value= "Ver notas" name="vernotas.php"> </td>
 <td align="center"><input type="button" value="Ver notas por alumno" name="vernotasAlumno.php"> </td>
-<td align="center"><input type="button" value="Añadir instrumentos de evaluación" name="otroInstrumento.php"> </td><td  align="center"><input type="button" value="Cambiar estándares de trimestre" name="cambiarEstandares.php"> </td>
+<td align="center"><input type="button" value="Añadir instrumentos de evaluación" name="otroInstrumento.php"> </td></tr><br>
+<table width="100%"><tr>
+<td  align="center"><input type="button" value="Cambiar estándares de trimestre" name="cambiarEstandares.php"> </td>
+<td  align="center"><input type="button" value="Resumen de notas por Trimestre" name="resumenNotas.php"> </td>
  <td align="center"><input type="button" value="Justificar calificaciones" name="vercalificaciones.php"></td>
  <td  align="center"><input type="button" value="Imprimir Programación" name="imprimirProgramacion.php"></td></tr>
 </table>

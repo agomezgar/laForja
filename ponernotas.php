@@ -6,6 +6,10 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 <script>
 $(document).ready(function(){
     $("#grupo").change(function(){
+//$("#materia").val("0");
+$("#tablaExamen").html("");
+$("#instrumento").val("");
+$("#trimestre").val("");
          $("#materia").prop("disabled", false);
 etapa=$("#grupo").val();
 //alert(etapa);
@@ -41,7 +45,9 @@ switch (etapa) {
 
 
     $("#materia").change(function(){
-
+$("#tablaExamen").html("");
+$("#instrumento").val("");
+$("#trimestre").val("");
 $("#trimestre").prop("disabled", false);
 profesor=$("#profesor").val();
 materia=$("#materia").val();
@@ -62,6 +68,9 @@ $("#trimestre").prop("disabled", false);
     });
   $("#trimestre").change(function(){
 $("#instrumento").prop("disabled", false);
+$("#tablaExamen").html("");
+$("#instrumento").val("");
+
 materia=$("#materia").val();
 etapa=$("#grupo").val();
 grupo=$("#grupo").find(":selected").text()

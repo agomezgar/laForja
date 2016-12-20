@@ -30,7 +30,8 @@ $pesoPAvanzado=($cargaPrioridad['peso'])/100;
 }
 }
 //Contamos los estandares
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
+
+$sql=mysqli_query($link,"SELECT idestandar FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
 //Ponemos a 0 la cuenta de estándares B,A,I;
 $nestandarB=0;
 $nestandarA=0;
@@ -125,7 +126,7 @@ $notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multAvanzado;
 
 }
 
-echo "<h2>Nota final: ".$notaAcumulada."</h2>";
+echo "<h2>Nota final: ".number_format($notaAcumulada,2)."</h2>";
 //AQUÍ ACABA LA RUTINA DE CONTABILIZACIÓN DE NOTAS
 $notaAcumulada=0;
 //echo"<form id=\"notas\" name=\"notas\" method=\"post\" action=\"grabaExamen.php\">";

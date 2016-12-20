@@ -8,6 +8,8 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 <script>
 $(document).ready(function(){
     $("#grupo").change(function(){
+$("#tablaCalificaciones").html("");
+$("#trimestre").val("");
          $("#materia").prop("disabled", false);
 etapa=$("#grupo").val();
 //alert(etapa);
@@ -42,7 +44,8 @@ switch (etapa) {
 
 
     $("#materia").change(function(){
-
+$("#tablaCalificaciones").html("");
+$("#trimestre").val("");
 $("#trimestre").prop("disabled", false);
 profesor=$("#profesor").val();
 materia=$("#materia").val();

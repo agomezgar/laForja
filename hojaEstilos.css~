@@ -34,15 +34,16 @@ select {
 }
 
 input[type=button], input[type=submit], input[type=reset],.button {
-  padding: 15px 25px;
-  font-size: 24px;
+  padding: 10px 20px;
+  font-size: 11px;
   text-align: center;
   cursor: pointer;
   outline: none;
   color: #fff;
   background-color: #4CAF50;
   border: none;
-  border-radius: 15px;
+width: 150px;
+  border-radius: 12px;
   box-shadow: 0 9px #999;
 }
 

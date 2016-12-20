@@ -86,7 +86,7 @@ switch (etapa) {
       data: {grupo: grupo,materia: materia, trimestre: trimestre,curso:curso},
       success: function(opciones){
       
-  $("#tablaCalificaciones").html(opciones);
+  //$("#tablaCalificaciones").html(opciones);
  
 
       }
@@ -100,7 +100,7 @@ cadena=cadena+'<input type="hidden" name="trimestre" value="'+trimestre+'">';
 cadena=cadena+'<input type="hidden" name="curso" value="'+curso+'">';
 cadena=cadena+'</form>';
 //alert(cadena);
-$(cadena).submit();
+$(cadena).appendTo('body').submit();
  //window.open('', '_blank');
     });
 

@@ -9,6 +9,9 @@ $(document).ready(function(){
 $("#curso").change(function(){
    $("#materia").prop("disabled", false);
 curso=$("#curso").val();
+
+$("#trimestre").val("");
+$("#tablaDatos").html("");
            $.ajax({
       url:"cargaMaterias.php",
       type: "POST",
@@ -23,6 +26,9 @@ curso=$("#curso").val();
     });
 });
     $("#materia").change(function(){
+
+$("#trimestre").val("");
+$("#tablaDatos").html("");
 profesor=$("#profesor").val();
 materia=$("#materia").val();
 curso=$("#curso").val();

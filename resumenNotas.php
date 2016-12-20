@@ -1,4 +1,6 @@
 <?php session_start(); 
+require(dirname(__FILE__).'/fpdf/fpdf.php');
+
 if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";echo "<meta http-equiv=\"refresh\" content=\"5;URL=index.php\">";}
 ?>
 <script src="./js/jquery-3.1.1.min.js"></script>
@@ -6,10 +8,8 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 <script>
 $(document).ready(function(){
     $("#grupo").change(function(){
-//$("#materia").val("0");
-$("#tablaExamen").html("");
-$("#instrumento").val("0");
-$("#trimestre").val("0");
+$("#tablaCalificaciones").html("");
+$("#trimestre").val("");
          $("#materia").prop("disabled", false);
 etapa=$("#grupo").val();
 //alert(etapa);
@@ -40,14 +40,12 @@ switch (etapa) {
         alert(thrownError);
       }
     });
-
     });
 
 
     $("#materia").change(function(){
-$("#tablaExamen").html("");
-$("#instrumento").val("0");
-$("#trimestre").val("0");
+$("#tablaCalificaciones").html("");
+$("#trimestre").val("");
 $("#trimestre").prop("disabled", false);
 profesor=$("#profesor").val();
 materia=$("#materia").val();
@@ -67,9 +65,6 @@ $("#trimestre").prop("disabled", false);
     });
     });
   $("#trimestre").change(function(){
-$("#instrumento").prop("disabled", false);
-$("#tablaExamen").html("");
-$("#instrumento").val("0");
 
 materia=$("#materia").val();
 etapa=$("#grupo").val();
@@ -88,47 +83,36 @@ switch (etapa) {
 		break;	
 }
 
-
          $.ajax({
-      url:"procesaInstrumento.php",
+      url:"dameCalificaciones.php",
       type: "POST",
       data: {grupo: grupo,materia: materia, trimestre: trimestre,curso:curso},
       success: function(opciones){
-        $("#instrumento").html(opciones);
+      
+  //$("#tablaCalificaciones").html(opciones);
+ 
+
       }
   
     });
-    $("#instrumento").change(function(){
-instrumento=$("#instrumento").val();
- $.ajax({
-      url:"procesaExamen.php",
-      type: "POST",
-      data: {grupo: grupo,materia: materia, trimestre: trimestre,curso:curso,instrumento:instrumento},
-      success: function(opciones){
-        $("#tablaExamen").html(opciones);
-      }
- });
-    });
-    });
-$(document).on('click', '#grabar', function() {
 
- $.ajax({
-      url:"grabaExamen.php",
-      type: "POST",
-      data: { grupo: grupo, alumno: alumno, nota: nota, nombreTablaExamenes: nombreTablaExamenes},
-      success: function(opciones){
-       alert(opciones);
-      }
+cadena='<form method="post" action="dameNotasGrupoPdf.php" target="_blank">';
+cadena=cadena+'<input type="hidden" name="grupo" value="'+grupo+'">';
+cadena=cadena+'<input type="hidden" name="materia" value="'+materia+'">';
+cadena=cadena+'<input type="hidden" name="trimestre" value="'+trimestre+'">';
+cadena=cadena+'<input type="hidden" name="curso" value="'+curso+'">';
+cadena=cadena+'</form>';
+//alert(cadena);
+$(cadena).appendTo('body').submit();
+ //window.open('', '_blank');
+    });
 
- });
- });
 });
 </script>
 <?php require ('config.php'); ?>
 <div id="elige">
 
 <?php
-
 //cargamos materias en select materia
    include('conectarse.php');
    $link=Conectarse();
@@ -161,11 +145,8 @@ $opcionesMateria.='<option value="'.$encuentraMaterias["codigo"].'">'.utf8_encod
 <option value="2">2º</option>
 <option value="3">3º</option>
 </select>
-<select name="instrumento" id="instrumento" disabled="disabled">
-<option value="">Seleccione instrumento de evaluación</option>
 
-</select>
 </div>
-<div id="tablaExamen">
+<div id="tablaCalificaciones">
 
 </div>

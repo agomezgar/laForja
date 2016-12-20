@@ -6,14 +6,31 @@ if (!isset ($_SESSION['identificado'])){echo "error; me has querido engañar";ec
 <script src="./scriptComplementario.js" language="javascript"></script>
 <script>
 $(document).ready(function(){
-
-
-
+$("#curso").change(function(){
+   $("#materia").prop("disabled", false);
+curso=$("#curso").val();
+$("#tablaDatos").html("");
+$("#trimestre").val("");
+           $.ajax({
+      url:"cargaMaterias.php",
+      type: "POST",
+      data: {curso: curso},
+      success: function(opciones){
+        $("#materia").html(opciones);
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
+});
     $("#materia").change(function(){
-
-
+$("#tablaDatos").html("");
+$("#trimestre").val("");
 profesor=$("#profesor").val();
 materia=$("#materia").val();
+curso=$("#curso").val();
+
   $.ajax({
       url:"verProfesor.php",
       type: "POST",
@@ -28,33 +45,7 @@ $("#curso").prop("disabled", false);
       }
   
     });
-
-    });
-
-  $("#trimestre").change(function(){
-
-materia=$("#materia").val();
-curso=$("#curso").val();
-trimestre=$("#trimestre").val();
-  $.ajax({
-      url:"verInstrumento.php",
-      type: "POST",
-      data: {materia: materia, curso: curso, trimestre: trimestre},
-      success: function(opciones){
-$("#tablaDatos").html(opciones);
-      },
-   error: function (xhr, ajaxOptions, thrownError) {
-        alert(xhr.status);
-        alert(thrownError);
-      }
-  
-    });
-
-    });
-  $("#curso").change(function(){
-materia=$("#materia").val();
-curso=$("#curso").val();
-  $.ajax({
+$.ajax({
       url:"compruebaMateriaCurso.php",
       type: "POST",
       data: {materia:materia,curso:curso},
@@ -68,8 +59,29 @@ $("#trimestre").prop("disabled", false);
       }
   
     });
-});
+
+    });
+  $("#trimestre").change(function(){
+materia=$("#materia").val();
+curso=$("#curso").val();
+trimestre=$("#trimestre").val();
+  $.ajax({
+      url:"verInstrumento.php",
+      type: "POST",
+      data: {materia: materia, curso: curso, trimestre: trimestre},
+      success: function(opciones){
+$("#tablaDatos").html(opciones);
+      },
+   error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+  
+    });
+    });
+ 
 $(document).on('click', '#datosInst td', function() {
+$(this).unbind('click');
  instrumento=$(this).attr('id');
 clase=$(this).attr('class');
 if(!($(this).is("#grabarInst"))){
@@ -79,7 +91,7 @@ if(!($(this).is("#grabarInst"))){
       type: "POST",
       data: {instrumento:instrumento,materia:materia,curso:curso},
       success: function(opciones){
-        alert ("instrumento borrado");
+        alert ("instrumento "+instrumento+" borrado");
 $("#tablaDatos").html(opciones);
       },
    error: function (xhr, ajaxOptions, thrownError) {
@@ -101,21 +113,37 @@ $("#tablaDatos").html(opciones);
       }
   
     });
-
 }else{
 //alert("Instrumento conservado");
 }
  }
 });
 $(document).on('click', '#datosInst :button', function() {
+$(this).unbind('click');
 contenido=$(this).attr('class');
 materia=$("#materia").val();
 curso=$("#curso").val();
+nuevo=true;
 trimestre=$("#trimestre").val();
 instrumento=prompt("Introduzca instrumento de evaluación", "Instrumento");
-
 //$(this).prop('disabled','true');
 //alert(instrumento);
+if (!instrumento.trim()){
+alert("Debe especificar un nombre para el nuevo instrumento de evaluación");
+}else{
+       $.ajax({
+      url:"compruebaInstrumento.php",
+      type: "POST",
+      async: false,
+      data: {contenido: contenido, criterio: instrumento, trimestre: trimestre},
+      success: function(opciones){
+//alert(opciones);
+if ($.trim(opciones)=='no'){
+alert("Ya hay un instrumento con el nombre "+instrumento);
+nuevo=false;
+}
+}
+ });if (nuevo){
 $.ajax({
       url:"asignaEstandaresInstrumentoIndividual.php",
       type: "POST",
@@ -129,11 +157,10 @@ $("#tablaDatos").html(opciones);
       }
   
     });
-
+}}
 });
 $(document).on('change', '[type=checkbox]', function() {
 // code here
-
 comprobado=$(this).prop('checked');
 instrumento=$(this).attr('name');
 trimestre=$("#trimestre").val();
@@ -141,9 +168,6 @@ estandar=$(this).attr('class');
 materia=$("#materia").val();
 curso=$("#curso").val();
 prioridad=$(this).attr('id');
-
-
-
 //alert("Comprobado: "+comprobado);
 //alert("Id instrumento: "+instrumento);
 //alert("Id estandar: "+estandar);
@@ -158,7 +182,6 @@ prioridad=$(this).attr('id');
       success: function(opciones){
      // $("#tablaDatos").html(opciones);
 //alert ("Datos actualizados");
-
       },
    error: function (xhr, ajaxOptions, thrownError) {
         alert(xhr.status);
@@ -169,7 +192,6 @@ prioridad=$(this).attr('id');
 }); 
 $(document).on('click', '#nuevoInstrumentoGrabado', function() {
 window.location.href='seleccionar.php';
-
 });
 });
 </script>
@@ -180,32 +202,29 @@ window.location.href='seleccionar.php';
 //cargamos materias en select materia
    include('conectarse.php');
    $link=Conectarse();
-
-
 $opcionesMateria="";
  $result = mysqli_query($link,"SELECT * FROM materias")or die (mysqli_error($link));
 while($encuentraMaterias = mysqli_fetch_array($result)) {
 $opcionesMateria.='<option value="'.$encuentraMaterias["codigo"].'">'.utf8_encode($encuentraMaterias["materia"]).'</option>';
-
 }
 ?>
 <input type="hidden" id="profesor" value="<?php echo $_SESSION['profesor'];?>">
-
-<select name="materia" id="materia">
+<select name="curso" id="curso">
+<option  value="" selected="selected">Seleccione nivel</option>
+<option  value="1" >1ºESO</option>
+<option  value="2" >2ºESO</option>
+<option  value="3" >3ºESO</option>
+<option  value="4" >4ºESO</option>
+<option  value="5" >1ºBACH</option>
+<option  value="6" >2ºBACH</option>
+<option  value="7" >1ºFPB</option>
+<option  value="8" >2ºFPB</option>
+</select>
+<select name="materia" id="materia" disabled="disabled">
 <option value="">Seleccione materia</option>
 <?php echo $opcionesMateria;?>
 </select>
-<select name="curso" id="curso" disabled="disabled">
-<option value="">Seleccione nivel</option>
-<option value="1">1º ESO</option>
-<option value="2">2º ESO</option>
-<option value="3">3º ESO</option>
-<option value="4">4º ESO</option>
-<option value="5">1º BACH</option>
-<option value="6">2º BACH</option>
-<option value="7">1º FPB</option>
-<option value="8">2º FBP</option>
-</select>
+
 <select name="trimestre" id="trimestre" disabled="disabled">
 <option value="">Seleccione trimestre</option>
 <option value="1">1º</option>
