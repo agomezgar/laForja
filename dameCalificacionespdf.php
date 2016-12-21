@@ -19,6 +19,7 @@ $pesoPAvanzado=0;
 $nombreTablaInstrumentos=$materia."Instrumentos".$curso;
 $nombreTablaExamenes=$materia."notas".$curso;
 $nombreTablaEstandares=$materia."organizacionestandares".$curso;
+$nombreTablaCompetencias="competencias".$materia;
 $listaEstandares="estandares".$materia;
 //echo $nombreTablaEstandares;
 //Cargamos peso de prioridades
@@ -86,7 +87,7 @@ $pdf->SetFont('Arial','',10);
 $pdf->MultiCell(0,5,utf8_decode($cadena));
 
 $altura=40; 
-
+$pdf->Ln();
 while ($encuentraInstrumentos=mysqli_fetch_array($buscaInstrumentos)){
 $inst=$encuentraInstrumentos['id'];
 $nombre=$encuentraInstrumentos['instrumento'];
@@ -117,9 +118,11 @@ $textoNotas=$textoNotas.'Instrumento: '.utf8_encode($nombre).' Nota: '.number_fo
 //$pdf->Cell(0,$altura,'Instrumento: '.$nombre.' Nota: '.$nota/$cuenta,1);
 $altura+=5;
 }
-$pdf->MultiCell(0,5,utf8_decode($textoNotas),1);
-}
 
+$pdf->MultiCell(0,5,utf8_decode($textoNotas),1);
+
+}
+$pdf->Ln();
 //BUSCAMOS ESTANDARES Y NOTAS CORRESPONDIENTES
 $sql=mysqli_query($link,"SELECT idestandar, prioridad FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar,prioridad")or die ("Error buscando estandares y sus notas: ".mysqli_error($link));
 while($buscaSql=mysqli_fetch_array($sql)){
@@ -129,10 +132,11 @@ $numeroInstrumentos=0;
 $idEstandarAplicada=$buscaSql['prioridad'];
 $est=mysqli_query($link,"SELECT estandar FROM $listaEstandares WHERE id=".$buscaSql['idestandar'])or die (mysqli_error($link));
 $cadenaEstandar='';
+$estandarActual=$buscaSql['idestandar'];
 while($dameEst=mysqli_fetch_array($est)){
 $cadenaEstandar='';
 //echo "<fieldset>".utf8_encode($dameEst[0])."<br>";
-$cadenaEstandar=$cadenaEstandar.utf8_encode($dameEst[0])."\n";
+$cadenaEstandar=$cadenaEstandar.utf8_encode($dameEst[0])."\n\n";
 $listaInst=mysqli_query($link,"SELECT DISTINCT * FROM $nombreTablaEstandares WHERE idestandar=".$buscaSql['idestandar']." AND trimestre=".$trimestre) or die(mysqli_error($link));
 while($encEst=mysqli_fetch_array($listaInst)){
 $buscInst=mysqli_query($link,"SELECT * FROM $nombreTablaInstrumentos WHERE id=".$encEst['idinstrumento']);
@@ -172,22 +176,22 @@ $notaEstandar=$notaEstandar+$notaInstrumento;
 //echo "<br>Numero de Instrumentos: ".$numeroInstrumentos." Nota media: ".$notaEstandar/$numeroInstrumentos."<br>";
 $cadenaEstandar=$cadenaEstandar."\nNumero de Instrumentos: ".$numeroInstrumentos." Nota media: ".number_format($notaEstandar/$numeroInstrumentos,2)."\n";
 if ($idEstandarAplicada=="1"){
-$cadenaEstandar=$cadenaEstandar."\nPrioridad de estandar: Básico"."\nAportación a la nota: ".number_format(($notaEstandar/$numeroInstrumentos)*$multBasico,4);
+$cadenaEstandar=$cadenaEstandar."\nPrioridad de estandar: Básico"."\n\nAportación a la nota: ".number_format(($notaEstandar/$numeroInstrumentos)*$multBasico,4)."\n\n";
 $notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multBasico;
 //echo "<br>Prioridad de estandar: Básico";
 //echo "<br>Aportación a la nota: ".($notaEstandar/$numeroInstrumentos)*$multBasico;
 //$notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multBasico;
 }
 if ($idEstandarAplicada=="2"){
-$cadenaEstandar=$cadenaEstandar."\nPrioridad de estandar: Intermedio"."\nAportación a la nota: ".number_format(($notaEstandar/$numeroInstrumentos)*$multIntermedio,4);
+$cadenaEstandar=$cadenaEstandar."\nPrioridad de estandar: Intermedio"."\n\nAportación a la nota: ".number_format(($notaEstandar/$numeroInstrumentos)*$multIntermedio,4)."\n\n";
 $notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multIntermedio;
 //echo "<br>Prioridad de estandar: Intermedio";
 //echo "<br>Aportación a la nota: ".($notaEstandar/$numeroInstrumentos)*$multIntermedio;
 //$notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multIntermedio;
 }
-if ($idEstandarAplicada=="3"){"\nPrioridad de estandar: Avanzado"."\nAportación a la nota: ".($notaEstandar/$numeroInstrumentos)*$multAvanzado;
+if ($idEstandarAplicada=="3"){"\nPrioridad de estandar: Avanzado"."\n\nAportación a la nota: ".($notaEstandar/$numeroInstrumentos)*$multAvanzado."\n\n";
 $notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multAvanzado;
-$cadenaEstandar=$cadenaEstandar."\nPrioridad de estandar: Avanzado"."\nAportación a la nota: ".number_format(($notaEstandar/$numeroInstrumentos)*$multAvanzado,4);
+$cadenaEstandar=$cadenaEstandar."\nPrioridad de estandar: Avanzado"."\n\nAportación a la nota: ".number_format(($notaEstandar/$numeroInstrumentos)*$multAvanzado,4)."\n";
 //echo "<br>Prioridad de estandar: Avanzado";
 //echo "<br>Aportación a la nota: ".($notaEstandar/$numeroInstrumentos)*$multAvanzado;
 //$notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multAvanzado;
@@ -195,7 +199,16 @@ $cadenaEstandar=$cadenaEstandar."\nPrioridad de estandar: Avanzado"."\nAportaci�
 
 //echo "</fieldset>";
 //$pdf->MultiCell(0,10,'NOTA ACUMULADA: '.$notaAcumulada);
+$cadenaEstandar=" \n".$cadenaEstandar."Competencias pertinentes: \n\n";
+$buscaComp=mysqli_query($link,"SELECT * FROM $nombreTablaCompetencias WHERE contenido=$estandarActual ORDER BY competencia");
+while($encComp=mysqli_fetch_array($buscaComp)){
+$compActual=$encComp['competencia'];
+$competencia=mysqli_query($link,"SELECT competencia FROM competencias WHERE id=$compActual");
+$cadenaEstandar=$cadenaEstandar."· ".utf8_encode(mysqli_fetch_array($competencia)[0])."\n";
+
 }
+}
+
 $pdf->MultiCell(0,5,utf8_decode($cadenaEstandar),1);
 
 }
