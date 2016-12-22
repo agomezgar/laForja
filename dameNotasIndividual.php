@@ -18,6 +18,14 @@ $nombreTablaEstandares=$materia."organizacionestandares".$curso;
 $listaEstandares="estandares".$materia;
 $nombreTablaCompetencias="competencias".$materia;
 $prioridad=mysqli_query($link,"SELECT * FROM prioridades");
+//variables para medir competencias
+$CM=array();
+$CL=array();
+$CD=array();
+$SI=array();
+$CEC=array();
+$CSC=array();
+$AA=array();
 while($cargaPrioridad=mysqli_fetch_array($prioridad)){
 if ($cargaPrioridad['prioridad']=="1"){
 $pesoPBasico=($cargaPrioridad['peso'])/100;
@@ -31,7 +39,7 @@ $pesoPAvanzado=($cargaPrioridad['peso'])/100;
 }
 //Contamos los estandares
 
-$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
+$sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die ("Error: ".mysqli_error($link));
 //Ponemos a 0 la cuenta de estándares B,A,I;
 $nestandarB=0;
 $nestandarA=0;
@@ -62,8 +70,9 @@ while($dameNombre=mysqli_fetch_array($sql)){
 $nombre=$dameNombre['nombre'];
 $apellidos=$dameNombre['apellidos'];
 }
+
 echo "<h2>Alumno: ".utf8_encode($apellidos).", ".utf8_encode($nombre)."</h2>";
-echo "<input type=\"submit\" id=\"pdfIndividual\" value=\"GenerarPDF\">";
+echo "<input type=\"submit\" id=\"pdfIndividual\" value=\"GenerarPDF\"><br><br>";
 //AQUÍ EMPIEZA LA RUTINA DE CONTABILIZACIÓN DE NOTAS
 $sql=mysqli_query($link,"SELECT * FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar")or die (mysqli_error($link));
 while($buscaSql=mysqli_fetch_array($sql)){
@@ -72,6 +81,7 @@ $numeroInstrumentos=0;
 
 $idEstandarAplicada=$buscaSql['prioridad'];
 $est=mysqli_query($link,"SELECT estandar FROM $listaEstandares WHERE id=".$buscaSql['idestandar'])or die (mysqli_error($link));
+$estandarActual=$buscaSql['idestandar'];
 while($dameEst=mysqli_fetch_array($est)){
 
 $listaInst=mysqli_query($link,"SELECT DISTINCT * FROM $nombreTablaEstandares WHERE idestandar=".$buscaSql['idestandar']." AND trimestre=".$trimestre) or die(mysqli_error($link));
@@ -83,6 +93,7 @@ while($encInst=mysqli_fetch_array($buscInst)){
 $buscaExamenes=mysqli_query($link,"SELECT * FROM $nombreTablaExamenes WHERE alumno=".$alumno." AND instrumento=".$encEst['idinstrumento']);
 $notaInstrumento=0;
 $numeroInstrumentos++;
+$notaComp=0;
 if (mysqli_num_rows($buscaExamenes)>1){
 $cuentaInt=0;
 $notaInt=0;
@@ -93,17 +104,43 @@ $notaInt= $notaInt+$encuentraEx['nota'];
 $cuentaInt++;
 }
 $notaInstrumento=$notaInt/$cuentaInt;
-
+$notaComp=$notaInstrumento;
 $notaEstandar=$notaEstandar+$notaInstrumento;
 }else{
 while($encuentraEx=mysqli_fetch_array($buscaExamenes)){
 $notaInstrumento= $encuentraEx['nota'];
-
+$notaComp=$notaInstrumento;
 $notaEstandar=$notaEstandar+$notaInstrumento;
 }
 
 }
-
+//ASIGNAMOS LA NOTA DE LOS INSTRUMENTOS UTILIZADOS TAMBIÉN A LAS COMPETENCIAS PERTINENTES PARA ESE ESTÁNDAR
+$buscaComp=mysqli_query($link,"SELECT competencia FROM $nombreTablaCompetencias WHERE contenido=$estandarActual");
+while($encuentraComp=mysqli_fetch_array($buscaComp)){
+switch ($encuentraComp['competencia']){
+case 1:
+$CM[]=$notaInstrumento;
+break;
+case 2:
+$CL[]=$notaInstrumento;
+break;
+case 3:
+$CD[]=$notaInstrumento;
+break;
+case 4:
+$SI[]=$notaInstrumento;
+break;
+case 5:
+$CEC[]=$notaInstrumento;
+break;
+case 6:
+$CSC[]=$notaInstrumento;
+break;
+case 7:
+$AA[]=$notaInstrumento;
+break;
+}
+}
 }
 
 }
@@ -125,9 +162,85 @@ $notaAcumulada=$notaAcumulada+($notaEstandar/$numeroInstrumentos)*$multAvanzado;
 }
 
 }
-
-echo "<h2>Nota final: ".number_format($notaAcumulada,2)."</h2>";
+echo"<table border=\"1\"><tr><td><h3>NOTA FINAL</h3></td><td>CM</td><td>CL</td><td>CD</td><td>SI</td><td>CEC</td><td>
+CSC</td><td>AA</td></tr>";
+echo "<tr><td><h3>".number_format($notaAcumulada,2)."</h3></td>";
 //AQUÍ ACABA LA RUTINA DE CONTABILIZACIÓN DE NOTAS
+//AQUÍ EMPIEZA LA RUTINA DE CONTABILIZACIÓN DE NOTAS POR COMPETENCIAS
+//$cadenaCompetencias="\n\nNOTAS POR COMPETENCIA TRABAJADA: ";
+//$cadenaCompetencias=$cadenaCompetencias."\nCompetencia Lingüística: ";
+$notaCompet=0;
+if(empty($CM)){
+//$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+echo "<td>No</td>";
+}else{
+for ($i=0;$i<count($CM);$i++){
+$notaCompet=$notaCompet+(float)$CM[$i];
+}
+echo"<td>".number_format(($notaCompet/count($CM)),2)."</td>";
+}
+$notaCompet=0;
+if(empty($CL)){
+//$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+echo "<td>No</td>";
+}else{
+for ($i=0;$i<count($CL);$i++){
+$notaCompet=$notaCompet+(float)$CL[$i];
+}
+echo"<td>".number_format(($notaCompet/count($CL)),2)."</td>";
+}
+$notaCompet=0;
+if(empty($CD)){
+//$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+echo "<td>No</td>";
+}else{
+for ($i=0;$i<count($CD);$i++){
+$notaCompet=$notaCompet+(float)$CD[$i];
+}
+echo"<td>".number_format(($notaCompet/count($CD)),2)."</td>";
+}
+$notaCompet=0;
+if(empty($SI)){
+//$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+echo "<td>No</td>";
+}else{
+for ($i=0;$i<count($SI);$i++){
+$notaCompet=$notaCompet+(float)$SI[$i];
+}
+echo"<td>".number_format(($notaCompet/count($SI)),2)."</td>";
+}
+$notaCompet=0;
+if(empty($CEC)){
+//$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+echo "<td>No</td>";
+}else{
+for ($i=0;$i<count($CEC);$i++){
+$notaCompet=$notaCompet+(float)$CEC[$i];
+}
+echo"<td>".number_format(($notaCompet/count($CEC)),2)."</td>";
+}
+$notaCompet=0;
+if(empty($CSC)){
+//$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+echo "<td>No</td>";
+}else{
+for ($i=0;$i<count($CSC);$i++){
+$notaCompet=$notaCompet+(float)$CSC[$i];
+}
+echo"<td>".number_format(($notaCompet/count($CSC)),2)."</td>";
+}
+$notaCompet=0;
+if(empty($AA)){
+//$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+echo "<td>No</td>";
+}else{
+for ($i=0;$i<count($AA);$i++){
+$notaCompet=$notaCompet+(float)$AA[$i];
+}
+echo"<td>".number_format(($notaCompet/count($AA)),2)."</td>";
+}
+echo "</tr></table>";
+//AQUÍ ACABA LA RUTINA DE CONTABILIZACIÓN DE NOTAS POR COMPETENCIAS
 $notaAcumulada=0;
 //echo"<form id=\"notas\" name=\"notas\" method=\"post\" action=\"grabaExamen.php\">";
 $cuentaInstrumentos=mysqli_query($link,"SELECT * FROM $nombreTablaInstrumentos WHERE trimestre='$trimestre'")or die(mysqli_error($link));

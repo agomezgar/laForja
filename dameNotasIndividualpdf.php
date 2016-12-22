@@ -20,6 +20,15 @@ $nombreTablaInstrumentos=$materia."Instrumentos".$curso;
 $nombreTablaExamenes=$materia."notas".$curso;
 $nombreTablaEstandares=$materia."organizacionestandares".$curso;
 $listaEstandares="estandares".$materia;
+$nombreTablaCompetencias="competencias".$materia;
+//variables para medir competencias
+$CM=array();
+$CL=array();
+$CD=array();
+$SI=array();
+$CEC=array();
+$CSC=array();
+$AA=array();
 //echo $nombreTablaEstandares;
 //Cargamos peso de prioridades
 $prioridad=mysqli_query($link,"SELECT * FROM prioridades");
@@ -121,6 +130,7 @@ $altura+=5;
 }
 $pdf->MultiCell(0,5,utf8_decode($textoNotas),1);
 }
+$pdf->Ln();
 
 //BUSCAMOS ESTANDARES Y NOTAS CORRESPONDIENTES
 $sql=mysqli_query($link,"SELECT idestandar,prioridad FROM $nombreTablaEstandares WHERE trimestre='$trimestre' GROUP BY idestandar,prioridad")or die (mysqli_error($link));
@@ -130,6 +140,7 @@ $numeroInstrumentos=0;
 
 $idEstandarAplicada=$buscaSql['prioridad'];
 $est=mysqli_query($link,"SELECT estandar FROM $listaEstandares WHERE id=".$buscaSql['idestandar'])or die (mysqli_error($link));
+$estandarActual=$buscaSql['idestandar'];
 $cadenaEstandar='';
 while($dameEst=mysqli_fetch_array($est)){
 $cadenaEstandar='';
@@ -169,7 +180,33 @@ $notaEstandar=$notaEstandar+$notaInstrumento;
 }
 
 }
-
+//ASIGNAMOS LA NOTA DE LOS INSTRUMENTOS UTILIZADOS TAMBIÉN A LAS COMPETENCIAS PERTINENTES PARA ESE ESTÁNDAR
+$buscaComp=mysqli_query($link,"SELECT competencia FROM $nombreTablaCompetencias WHERE contenido=$estandarActual");
+while($encuentraComp=mysqli_fetch_array($buscaComp)){
+switch ($encuentraComp['competencia']){
+case 1:
+$CM[]=$notaInstrumento;
+break;
+case 2:
+$CL[]=$notaInstrumento;
+break;
+case 3:
+$CD[]=$notaInstrumento;
+break;
+case 4:
+$SI[]=$notaInstrumento;
+break;
+case 5:
+$CEC[]=$notaInstrumento;
+break;
+case 6:
+$CSC[]=$notaInstrumento;
+break;
+case 7:
+$AA[]=$notaInstrumento;
+break;
+}
+}
 }
 //echo "<br>Numero de Instrumentos: ".$numeroInstrumentos." Nota media: ".$notaEstandar/$numeroInstrumentos."<br>";
 $cadenaEstandar=$cadenaEstandar."\nNumero de Instrumentos: ".$numeroInstrumentos." Nota media: ".number_format($notaEstandar/$numeroInstrumentos,2)."\n";
@@ -203,7 +240,83 @@ $pdf->MultiCell(0,5,utf8_decode($cadenaEstandar),1);
 }
 $pdf->SetFont('Arial','B',16);
 $pdf->MultiCell(0,10,'NOTA TOTAL: '.number_format($notaAcumulada,2));
+$cadenaCompetencias="\n\nNOTAS POR COMPETENCIA TRABAJADA: ";
+$cadenaCompetencias=$cadenaCompetencias."\nCompetencia Lingüística: ";
+$notaCompet=0;
+if(empty($CL)){
+$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+}else{
+for ($i=0;$i<count($CL);$i++){
+$notaCompet=$notaCompet+(float)$CL[$i];
+}
 
+$cadenaCompetencias=$cadenaCompetencias.number_format(($notaCompet/count($CL)),2);
+}
+//$pdf->MultiCell(0,10,utf8_decode('NOTA COMPETENCIA LINGÜÍSTICA: ').$notaCompet);
+$cadenaCompetencias=$cadenaCompetencias."\nCompetencia Matemática: ";
+if(empty($CM)){
+$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+}else{
+$notaCompet=0;
+for ($i=0;$i<count($CM);$i++){
+$notaCompet=$notaCompet+(float)$CM[$i];
+}
+$cadenaCompetencias=$cadenaCompetencias.number_format(($notaCompet/count($CM)),2);
+}
+//$pdf->MultiCell(0,10,utf8_decode('NOTA COMPETENCIA MATEMÁTICA: ').$notaCompet);
+$cadenaCompetencias=$cadenaCompetencias."\nCompetencia Digital: ";
+if(empty($CD)){
+$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+}else{
+$notaCompet=0;
+for ($i=0;$i<count($CD);$i++){
+$notaCompet=$notaCompet+(float)$CD[$i];
+}
+//$cadenaCompetencias=$cadenaCompetencias.number_format(($notaCompet/count($CD)),2);
+$cadenaCompetencias=$cadenaCompetencias.number_format(($notaCompet/count($CD)),2);
+}
+$cadenaCompetencias=$cadenaCompetencias."\nSentido de la Iniciativa y Espíritu Emprendedor: ";
+if(empty($SI)){
+$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+}else{
+$notaCompet=0;
+for ($i=0;$i<count($SI);$i++){
+$notaCompet=$notaCompet+(float)$SI[$i];
+}
+$cadenaCompetencias=$cadenaCompetencias.number_format(($notaCompet/count($SI)),2);
+}
+$cadenaCompetencias=$cadenaCompetencias."\nConciencia y Expresiones Culturales: ";
+if(empty($CEC)){
+$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+}else{
+$notaCompet=0;
+for ($i=0;$i<count($CEC);$i++){
+$notaCompet=$notaCompet+(float)$CEC[$i];
+}
+$cadenaCompetencias=$cadenaCompetencias.number_format(($notaCompet/count($CEC)),2);
+}
+$cadenaCompetencias=$cadenaCompetencias."\nCompetencias Sociales y Cívicas: ";
+if(empty($CSC)){
+$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+}else{
+$notaCompet=0;
+for ($i=0;$i<count($CSC);$i++){
+$notaCompet=$notaCompet+(float)$CSC[$i];
+}
+$cadenaCompetencias=$cadenaCompetencias.number_format(($notaCompet/count($CSC)),2);
+}
+$cadenaCompetencias=$cadenaCompetencias."\nAprender a aprender: ";
+if(empty($AA)){
+$cadenaCompetencias=$cadenaCompetencias."No se ha trabajado esta competencia en esta materia para este trimestre";
+}else{
+$notaCompet=0;
+for ($i=0;$i<count($AA);$i++){
+$notaCompet=$notaCompet+(float)$AA[$i];
+}
+$cadenaCompetencias=$cadenaCompetencias.number_format(($notaCompet/count($AA)),2);
+}
+$pdf->SetFont('Arial','',10);
+$pdf->MultiCell(0,5,utf8_decode($cadenaCompetencias));
 
 }
 $pdf->Output();
