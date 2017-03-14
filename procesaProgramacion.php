@@ -121,7 +121,9 @@ break;
 case 6:
 $CSC[]=$prioridadActual;
 break;
-
+case 7:
+$AA[]=$prioridadActual;
+break;
 }
 }
 }
@@ -165,8 +167,9 @@ $numero=number_format((count($CEC)/$numeroTotalEstandares)*100,2);
 
 echo "<tr><td>Conciencia y Expresiones Culturales</td><td>".count($CEC)."</td><td>".$numero."%</td></tr>";
 $numero=number_format((count($CSC)/$numeroTotalEstandares)*100,2);
-
 echo "<tr><td>Competencias Sociales y Cívicas</td><td>".count($CSC)."</td><td>".$numero."%</td></tr>";
+$numero=number_format((count($AA)/$numeroTotalEstandares)*100,2);
+echo "<tr><td>Aprender a aprender:</td><td>".count($AA)."</td><td>".$numero."%</td></tr>";
 echo"</table>";
 /*Aquí acaba el algoritmo de 
 localización, priorización y 
